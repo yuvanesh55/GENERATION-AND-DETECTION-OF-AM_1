@@ -83,13 +83,78 @@ Note: Keep all the switch faults in off position
 <img width="600" height="800" alt="image" src="https://github.com/user-attachments/assets/7bc77926-9c2a-42c6-994b-6c67433b11d2" />
 
 ## PROGRAM:
+```
+	am = 8.8;
+	fm = 863;
+	fs = 863000;
+	pi = %pi;
+	t = 0:1/fs:2/fm;
+	m = am * cos(2 * pi * fm * t);
+	ac = 17.6;
+	fc = 8630;
+	c = cos(2 * pi * fc * t);
+	modulated = (ac + m) .* c;
+	
+	demod_raw = modulated .* c;
+	N = length(demod_raw);
+	M = fft(demod_raw);
+	f = (0:N-1)*(fs/N);
+	
+	cutoff = 2 * fm;
+	H = (f < cutoff);
+	M_filtered = M .* H;
+	demodulated = real(ifft(M_filtered));
+	
+	avg = sum(demodulated) / length(demodulated);
+	demodulated = demodulated - avg;
+	demodulated = demodulated / max(abs(demodulated));
+	demodulated = demodulated * max(abs(m));
+	
+	subplot(4,1,1);
+	plot(t, m);
+	title('Message Signal');
+	xlabel('Time (s)');
+	ylabel('Amplitude');
+	
+	subplot(4,1,2);
+	plot(t, c);
+	title('Carrier Signal');
+	xlabel('Time (s)');
+	ylabel('Amplitude');
+	
+	subplot(4,1,3);
+	plot(t, modulated);
+	title('AM Modulated Signal');
+	xlabel('Time (s)');
+	ylabel('Amplitude');
+	
+	subplot(4,1,4);
+	plot(t, demodulated);
+	title('Demodulated Signal');
+	xlabel('Time (s)');
+	ylabel('Amplitude');
+```
  
 ## TABULATION:
 
+<img width="793" height="450" alt="image" src="https://github.com/user-attachments/assets/09998a45-3ca3-4f82-bee0-a7dae59bb197" />
+
+
+
+
 ## CALCULATION:
+
+<img width="757" height="255" alt="image" src="https://github.com/user-attachments/assets/0e11056e-ab98-46f7-bf36-af9c2ffdf65a" />
+
 
 
 
 ## OUTPUT:
 
+<img width="730" height="459" alt="image" src="https://github.com/user-attachments/assets/733142c3-ec07-4ee3-89c8-fd48a16bfa57" />
+
+
 ## RESULT:
+
+Thus the amplitude modulation and demodulation is experimentally done and the output is verified.
+
